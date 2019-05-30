@@ -17,7 +17,8 @@ interface IComponentState {
     surveysLoaded: boolean,
     redirectTo: any,
     activeCheck: boolean,
-    filteredSurveys: ISurvey[]
+    filteredSurveys: ISurvey[],
+    selected: string;
 }
 
 class AssignedSurveysComponent extends Component<IComponentProps, IComponentState, {}> {
@@ -28,7 +29,8 @@ class AssignedSurveysComponent extends Component<IComponentProps, IComponentStat
             surveysLoaded: false,
             redirectTo: null,
             activeCheck: true,
-            filteredSurveys: []
+            filteredSurveys: [],
+            selected: "Sort By"
         }
     }
 
@@ -66,7 +68,7 @@ class AssignedSurveysComponent extends Component<IComponentProps, IComponentStat
         let filtered:ISurvey[] = [];
 
         filtered = lByAssigned.filter((survey) => {
-            if(new Date(survey.closingDate) > new Date()){
+            if(new Date(survey.closingDate) > new Date()) {
                 return true;
             } else if (survey.closingDate === null){
                 return true;
@@ -86,7 +88,7 @@ class AssignedSurveysComponent extends Component<IComponentProps, IComponentStat
 
         filtered = lByIncomplete.filter((survey) => {
             if(survey.closingDate !== null) {
-                if(new Date(survey.closingDate) < new Date()){
+                if((new Date(survey.closingDate) < new Date()) && (new Date().getFullYear() - new Date(survey.closingDate).getFullYear() < 1)){
                     return true;
                 } else {
                     return false;
@@ -114,7 +116,12 @@ class AssignedSurveysComponent extends Component<IComponentProps, IComponentStat
             default:
                 break;
         }
+        this.setState({
+            selected: option
+        })
     }
+
+
 
     render() {
         if (this.state.redirectTo) {
@@ -130,7 +137,7 @@ class AssignedSurveysComponent extends Component<IComponentProps, IComponentStat
                             <div className="filterSelect">
                                 <div className="dropdown sortDropDown">
                                     <Button className="btn userDropdownBtn dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Sort By
+                                        {this.state.selected}
                                     </Button>
                                     <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
                                         <ul className="list-group">
@@ -195,7 +202,7 @@ class AssignedSurveysComponent extends Component<IComponentProps, IComponentStat
                             <div className="filterSelect">
                                 <div className="dropdown sortDropDown">
                                     <Button className="btn userDropdownBtn dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Sort By
+                                        {this.state.selected}
                                     </Button>
                                     <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
                                         <ul className="list-group">

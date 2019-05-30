@@ -88,41 +88,19 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
         });
     }
 
-    loadListByClosing = () => {
-        let lByClosing = this.state.surveys.slice();
-        let sorted = false;
-        let changed = false;
-        let temp;
-        while(!sorted){
-            changed = false;
-            for(let i = 0; i < (lByClosing.length)-1; i++){
-                if(this.getClosingDate(lByClosing, i) >= this.getClosingDate(lByClosing, i+1)){
-                    temp = lByClosing[i];                         // Storing value at current position
-                    lByClosing[i] = lByClosing[i+1];                // Swapping value at next position to current
-                    lByClosing[i+1] = temp;                       // Storing value at next position to stored value
-                    changed = true;
-                }
-            }
-        
-            if(!changed){
-                sorted = true;
-            }
-        }
-        return lByClosing;
-    }
-
     filterListByClosing = () => {
         this.setState({
             closingFilter: true
         });
-        this.removePassedSurveys(this.loadListByClosing());
+        console.log("In filter list by closing");
+        this.removePassedSurveys(this.state.surveys);
     }
 
     filterListByActive = () => {
         this.setState({
             closingFilter: true
         });
-        this.returnActiveSurveys(this.loadListByClosing());
+        this.returnActiveSurveys(this.state.surveys);
     }
 
 
@@ -267,7 +245,35 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.closingDateDisplay()}
+                                        {!this.state.closingFilter ? this.state.surveys.map(survey => (
+                <tr key={survey.surveyId} className="rev-table-row">
+                    <td><input type="checkbox" onChange={e => this.checkFunc(e)} id={survey.surveyId.toString()} /></td>
+                    <td>{survey.title}</td>
+                    <td>{survey.description}</td>
+                    <td>{survey.dateCreated && new Date(survey.dateCreated).toDateString()}</td>
+                    <td>{survey.closingDate && new Date(survey.closingDate).toDateString()}</td>
+                    <td>{survey.published ? 'Yes' : 'No'}</td>
+                    <td><Button className='assignSurveyBtn' onClick={() =>
+                        this.handleLoadSurveyData(survey.surveyId)}>Data</Button></td>
+                    <td><Button className='assignSurveyBtn' onClick={() =>
+                        this.loadSurveyRespondents(survey.surveyId)}>Status</Button></td>
+                </tr>
+            ))
+            : 
+            this.state.listFiltered.map(filtered => (
+                <tr key={filtered.surveyId} className="rev-table-row">
+                    <td><input type="checkbox" onChange={e => this.checkFunc(e)} id={filtered.surveyId.toString()} /></td>
+                    <td>{filtered.title}</td>
+                    <td>{filtered.description}</td>
+                    <td>{filtered.dateCreated && new Date(filtered.dateCreated).toDateString()}</td>
+                    <td>{filtered.closingDate && new Date(filtered.closingDate).toDateString()}</td>
+                    <td>{filtered.published ? 'Yes' : 'No'}</td>
+                    <td><Button className='assignSurveyBtn' onClick={() =>
+                        this.handleLoadSurveyData(filtered.surveyId)}>Data</Button></td>
+                    <td><Button className='assignSurveyBtn' onClick={() =>
+                        this.loadSurveyRespondents(filtered.surveyId)}>Status</Button></td>
+                </tr>
+            ))}
                                     </tbody>
                                 </Table>
                                 <div className="assignButtonDiv">
