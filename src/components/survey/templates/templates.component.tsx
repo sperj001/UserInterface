@@ -76,6 +76,7 @@ class TemplatesComponent extends Component<TemplatesProps, IComponentState> {
             newTitle: event.target.value,
         })
     }
+    
     changeSurveyDescription = (event) => {
         this.setState({
             newDescription: event.target.value,
@@ -96,6 +97,7 @@ class TemplatesComponent extends Component<TemplatesProps, IComponentState> {
 
         })
     }
+
     handleClose = () => {
         this.setState({
             survey: {},

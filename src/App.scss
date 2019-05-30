@@ -1034,3 +1034,17 @@ Fa Circle
  .visualdata{
   left:55%;
 }
+
+.option-box:hover {
+  background-color: $revature-orange-light;
+  cursor: pointer;
+}
+
+.sortDropDown {
+  float: left;
+}
+
+.center-div {
+  display: flex;
+  justify-content: center;
+}
