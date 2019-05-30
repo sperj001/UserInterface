@@ -237,7 +237,6 @@ class TemplatesComponent extends Component<TemplatesProps, IComponentState> {
             surveyId: 0,
             dateCreated: this.state.dateCreated
         })
-        console.log(this.state.survey);
         this.props.history.push({
         pathname: '/surveys/build',
         state: { displaySurvey: this.state.survey }});
