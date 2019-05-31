@@ -254,11 +254,14 @@ export const surveyClient = {
     smsClient.post(historyBaseRoute, postObject);
   },
 
-  findHistoriesBySurveyId: async (id: number) => {
+  findHistoriesBySurveyId: async (id: number, pageId : number) => {
     let histories;
-    await smsClient.get(`${historyBaseRoute}/survey/${id}`)
+
+    await smsClient.get(`${historyBaseRoute}/pageable/${id}/${pageId}`)
       .then(response => {
+        console.log('Total pages : ' + response.data.totalPages);
         histories = response.data;
+        
       })
       .catch(err => {
         console.log(err);
