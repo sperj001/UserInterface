@@ -97,7 +97,6 @@ describe('Base Test Rendering For Question Types', () => {
         expect(component).resolves;
     });
 });
-
 describe('Question Given Test Rendering For Question Types', () => {
     
     //--------------------TEST 1------------------------------

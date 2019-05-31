@@ -182,14 +182,17 @@ class surveyBuild extends React.Component<IComponentProps, IComponentState>{
       showModal: true
     })
   }
+
   handleClose = () => {
     this.setState({
       showModal: false
     })
   }
+
   addClick = () =>{
     this.setState({displayChoice : true});
   }
+
   toAddFunction = (type:string) => {
     this.setState({displayChoice : false});
     const { completedTasks, todos } = this.state;
@@ -420,7 +423,6 @@ class surveyBuild extends React.Component<IComponentProps, IComponentState>{
           </div>
         </div>
       </>
-
 
 
     );
