@@ -22,7 +22,7 @@ interface IComponentState {
     listFiltered: ISurvey[]
 }
 
-class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
+export class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
     constructor(props) {
         super(props);
         this.state = {
