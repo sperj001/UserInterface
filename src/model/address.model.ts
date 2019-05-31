@@ -1,5 +1,5 @@
 export interface IAddress {
-  addressId:         number,
+  addressId:   number,
   street:     string,
   alias:      string,
   city:       string,

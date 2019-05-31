@@ -17,21 +17,17 @@ interface IComponentState {
     surveys: ISurvey[],
     surveysLoaded: boolean,
     surveysToAssign: number[],
-    redirectTo: string | null,
-    closingFilter: boolean
-    listFiltered: ISurvey[]
+    redirectTo: string | null
 }
 
-export class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
+class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
     constructor(props) {
         super(props);
         this.state = {
             surveys: [],
             surveysLoaded: false,
             surveysToAssign: [],
-            redirectTo: null,
-            closingFilter: false,
-            listFiltered: []
+            redirectTo: null
         }
     }
 
@@ -51,62 +47,6 @@ export class AllSurveysComponent extends Component<IComponentProps, IComponentSt
         this.setState({
             redirectTo: `/surveys/respondents-data/${surveyId}`
         })
-    }
-
-    getClosingDate = (array, index) => {
-        return array[index].closingDate;
-    }
-
-    returnPassedSurveys = (arr) => {
-        let closingSurvey = arr;
-        let filtered:ISurvey[] = [];
-        for(let i = 0; i < closingSurvey.length; i++) {
-            if(closingSurvey[i].closingDate !== null) {
-                if(new Date(closingSurvey[i].closingDate) < new Date()) {
-                    filtered.push(closingSurvey[i]);
-                }
-            }
-        }
-        this.setState({
-            listFiltered: filtered
-        });
-    }
-
-    returnActiveSurveys = (arr) => {
-        let activeSurvey = arr;
-        let filtered:ISurvey[] = [];
-        filtered = activeSurvey.filter((survey) => {
-            if(new Date(survey.closingDate) > new Date()){
-                return true;
-            } else if(survey.closingDate === null){
-                return true;
-            }
-            return false;
-        });
-        this.setState({
-            listFiltered: filtered
-        });
-    }
-
-    filterListByClosing = () => {
-        this.setState({
-            closingFilter: true
-        });
-        console.log("In filter list by closing");
-        this.returnPassedSurveys(this.state.surveys);
-    }
-
-    filterListByActive = () => {
-        this.setState({
-            closingFilter: true
-        });
-        this.returnActiveSurveys(this.state.surveys);
-    }
-
-    unFilterList = () => {
-        this.setState({
-            closingFilter: false
-        });
     }
 
     checkFunc = (e) => {
@@ -139,49 +79,16 @@ export class AllSurveysComponent extends Component<IComponentProps, IComponentSt
         })
     }
 
-    filterCheck = (e) => {
-        const {id:option} = e.target;
-        switch(option){
-            case "Active":
-                this.filterListByActive();
-                break;
-            case "Closed":
-                this.filterListByClosing();
-                break;
-            default:
-                break;
-        }
-    }
-
     render() {
         if (this.state.redirectTo) {
             return <Redirect push to={this.state.redirectTo} />
         }
-        console.log(this.state.surveys);
-        const sortOptions = ["Active", "Closed"];
         return (
             <>
                 {this.state.surveysLoaded ? (
                     <Fragment>
                         {this.state.surveys.length ? (
                             <>
-                            <div className="filterSelect">
-                                <div className="dropdown userDropdown">
-                                    <Button className="btn userDropdownBtn dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Sort By
-                                    </Button>
-                                    <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                        <ul className="list-group">
-                                        { 
-                                            sortOptions.map(option => (
-                                                <li id={option} key={option} className="list-group-item option-box" onClick={(e) => this.filterCheck(e)}>{option}</li>
-                                            ))
-                                        }
-                                        </ul>
-                                    </div>
-                                </div>
-                                <button onClick={this.unFilterList} className="btn btn-secondary"> Remove filter </button>
-                            </div>
                                 <Table striped id="manage-users-table" className="tableUsers">
                                     <thead className="rev-background-color">
                                         <tr>
@@ -196,35 +103,20 @@ export class AllSurveysComponent extends Component<IComponentProps, IComponentSt
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {!this.state.closingFilter ? this.state.surveys.map(survey => (
-                                        <tr key={survey.surveyId} className="rev-table-row">
-                                            <td><input type="checkbox" onChange={e => this.checkFunc(e)} id={survey.surveyId.toString()} /></td>
-                                            <td>{survey.title}</td>
-                                            <td>{survey.description}</td>
-                                            <td>{survey.dateCreated && new Date(survey.dateCreated).toDateString()}</td>
-                                            <td>{survey.closingDate && new Date(survey.closingDate).toDateString()}</td>
-                                            <td>{survey.published ? 'Yes' : 'No'}</td>
-                                            <td><Button className='assignSurveyBtn' onClick={() =>
-                                                this.handleLoadSurveyData(survey.surveyId)}>Data</Button></td>
-                                            <td><Button className='assignSurveyBtn' onClick={() =>
-                                                this.loadSurveyRespondents(survey.surveyId)}>Status</Button></td>
-                                        </tr>
-                                    ))
-                                    : 
-                                    this.state.listFiltered.map(filtered => (
-                                        <tr key={filtered.surveyId} className="rev-table-row">
-                                            <td><input type="checkbox" onChange={e => this.checkFunc(e)} id={filtered.surveyId.toString()} /></td>
-                                            <td>{filtered.title}</td>
-                                            <td>{filtered.description}</td>
-                                            <td>{filtered.dateCreated && new Date(filtered.dateCreated).toDateString()}</td>
-                                            <td>{filtered.closingDate && new Date(filtered.closingDate).toDateString()}</td>
-                                            <td>{filtered.published ? 'Yes' : 'No'}</td>
-                                            <td><Button className='assignSurveyBtn' onClick={() =>
-                                                this.handleLoadSurveyData(filtered.surveyId)}>Data</Button></td>
-                                            <td><Button className='assignSurveyBtn' onClick={() =>
-                                                this.loadSurveyRespondents(filtered.surveyId)}>Status</Button></td>
-                                        </tr>
-                                    ))}
+                                        {this.state.surveys.map(survey => (
+                                            <tr key={survey.surveyId} className="rev-table-row">
+                                                <td><input type="checkbox" onChange={e => this.checkFunc(e)} id={survey.surveyId.toString()} /></td>
+                                                <td>{survey.title}</td>
+                                                <td>{survey.description}</td>
+                                                <td>{survey.dateCreated && new Date(survey.dateCreated).toDateString()}</td>
+                                                <td>{survey.closingDate && new Date(survey.closingDate).toDateString()}</td>
+                                                <td>{survey.published ? 'Yes' : 'No'}</td>
+                                                <td><Button className='assignSurveyBtn' onClick={() =>
+                                                    this.handleLoadSurveyData(survey.surveyId)}>Data</Button></td>
+                                                <td><Button className='assignSurveyBtn' onClick={() =>
+                                                    this.loadSurveyRespondents(survey.surveyId)}>Status</Button></td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </Table>
                                 <div className="assignButtonDiv">
@@ -232,7 +124,6 @@ export class AllSurveysComponent extends Component<IComponentProps, IComponentSt
                                         buttonLabel='Assign To Cohorts'
                                         surveysToAssign={this.state.surveysToAssign} />
                                 </div>
-                                
                             </>
                         ) : (
                                 <div>No Surveys to Display</div>

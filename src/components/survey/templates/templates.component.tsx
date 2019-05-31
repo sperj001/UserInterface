@@ -76,7 +76,6 @@ class TemplatesComponent extends Component<TemplatesProps, IComponentState> {
             newTitle: event.target.value,
         })
     }
-    
     changeSurveyDescription = (event) => {
         this.setState({
             newDescription: event.target.value,
@@ -97,7 +96,6 @@ class TemplatesComponent extends Component<TemplatesProps, IComponentState> {
 
         })
     }
-
     handleClose = () => {
         this.setState({
             survey: {},
@@ -212,39 +210,7 @@ class TemplatesComponent extends Component<TemplatesProps, IComponentState> {
             surveyClient.saveToQuestionJunction(junctionTable);
         }
     }
-    handleDuplicateClose = async () => {
-        if (this.state.survey.title !== this.state.newTitle) {
-            this.setState({
-                newTitle: this.state.newTitle,
-            })
-        }
-        else {
-            this.setState({
-                newTitle: this.state.survey.title,
-            })
-        }
 
-        if (this.state.survey.description !== this.state.newDescription) {
-            this.setState({
-                newDescription: this.state.newDescription
-            })
-        } else {
-            this.setState({
-                newDescription: this.state.survey.description
-            })
-
-        }
-        this.setState({
-            showModal: false,
-            surveyId: 0,
-            dateCreated: this.state.dateCreated
-        })
-        this.props.history.push({
-        pathname: '/surveys/build',
-        state: { displaySurvey: this.state.survey }});
-
-        
-    }
     render() {
         if (this.state.redirectTo) {
             return <Redirect push to={this.state.redirectTo} />
@@ -333,7 +299,6 @@ class TemplatesComponent extends Component<TemplatesProps, IComponentState> {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button className="buttonBack" onClick={() => this.handleClose()}>Back</Button>
-                        <Button className="buttonCreate" onClick={() => this.handleDuplicateClose()}>Duplicate</Button>
                         <Button className="buttonCreate" onClick={() => this.handleCreateClose()}>Create</Button>
                     </Modal.Footer>
                 </Modal>

@@ -38,13 +38,13 @@ import Input from 'reactstrap/lib/Input';
  *                                                                                      
  * NOTE: clicking the remove selected users button should mount a new modal
  * `
- * TODO: set saved text to be based on isSaved
+ * T                         ODO: set saved text to be based on isSaved
  * TODO: create custom component for handling users statuses
  * TODO: make users selectable
  * TODO: add remove selected users functionality
  */
 export class ManageCohortsModal extends React.Component<IManageCohortsModalProps, any> {
-    constructor(props:IManageCohortsModalProps) {
+    constructor(props:IManageCohortsModalProps)  {
         super(props);
     }
 
