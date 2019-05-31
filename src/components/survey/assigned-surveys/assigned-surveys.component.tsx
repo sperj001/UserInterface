@@ -189,7 +189,7 @@ class AssignedSurveysComponent extends Component<IComponentProps, IComponentStat
                                         </div>
                                     </div>
                                 </div>
-                                <div className="center-div">No Surveys to Display</div>
+                                <div className="center-div tada">No Surveys to Display</div>
                             </>
                             )
                     ) : (
@@ -254,7 +254,7 @@ class AssignedSurveysComponent extends Component<IComponentProps, IComponentStat
                                         </div>
                                     </div>
                                 </div>
-                                <div className="center-div">No Surveys to Display</div>
+                                <div className="center-div tada">No Surveys to Display</div>
                             </>
                             )
                     ) : (
