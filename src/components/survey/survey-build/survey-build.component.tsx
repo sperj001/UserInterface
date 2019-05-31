@@ -145,10 +145,17 @@ class surveyBuild extends React.Component<IComponentProps, IComponentState>{
   testaxois = async (event) => {
     surveyClient.findSurveyById(2);
   }
-
-  componentDidMount() {
-    this.testaxois(event);
+  componentWillMount(){
     this.addSpecificSurvey();
+  }
+  componentDidMount (){
+    this.testaxois(event);
+     
+   
+      this.setState({
+        notRenderedFirstTime: false
+      })
+    
   }
   addSpecificSurvey = async() => {
     if(this.props.history.location.state != undefined){
@@ -331,11 +338,7 @@ class surveyBuild extends React.Component<IComponentProps, IComponentState>{
           console.log("No matching option to render");
       }
     }
-    if(index == (this.state.completedTasks.length -1) && this.state.notRenderedFirstTime){
-      this.setState({
-        notRenderedFirstTime: false
-      })
-    }
+    
     return showme;
   }
   render() {
