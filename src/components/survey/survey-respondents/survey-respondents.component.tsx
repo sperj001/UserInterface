@@ -1,58 +1,69 @@
-import React, { Component } from 'react';
-import { Redirect, RouteComponentProps } from 'react-router';
-import { Table } from 'reactstrap';
+import React, { Fragment } from 'react';
 import { surveyClient } from '../../../axios/sms-clients/survey-client';
-import { ISurvey } from '../../../model/surveys/survey.model';
-import { connect } from 'react-redux';
-import { IAuthState } from '../../../reducers/management';
-import { IState } from '../../../reducers';
+import { Table } from 'reactstrap';
 import Loader from '../Loader/Loader';
+import { Redirect, RouteComponentProps } from 'react-router';
+import { IState } from '../../../reducers';
+import { connect } from 'react-redux';
+import Button from 'reactstrap/lib/Button';
 
 interface IComponentProps extends RouteComponentProps<{}> {
-    auth: IAuthState;
-}
+    match: any
+};
 
 interface IComponentState {
-    surveys: ISurvey[],
-    surveysLoaded: boolean,
-    redirectTo: any
-}
+    historyData: any,
+    historyDataLoaded: boolean,
+    redirectTo: any,
+    pageNumber: number,
+    totalPage: number
+};
 
-class AssignedSurveysComponent extends Component<IComponentProps, IComponentState, {}> {
-    constructor(props: any) {
+class SurveyRespondentsComponent extends React.Component<IComponentProps, IComponentState> {
+    constructor(props: IComponentProps) {
         super(props);
         this.state = {
-            surveys: [],
-            surveysLoaded: false,
-            redirectTo: null
+            historyData: [],
+            historyDataLoaded: false,
+            redirectTo: null,
+            pageNumber: 0,
+            totalPage: 0
         }
     }
 
-    componentDidMount() {
-        this.loadMyAssignedSurveys();
+    componentWillMount() {
+        this.loadSurveyRespondents(this.state.pageNumber);
     }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.auth !== this.props.auth) {
-            this.loadMyAssignedSurveys();
-        }
-    }
-
-    loadMyAssignedSurveys = async () => {
-        
-        if (this.props.auth.currentUser.email) {
-            const myAssignedSurveys = await surveyClient.findSurveysAssignedToUser(this.props.auth.currentUser.email);
+    incrementCounter = async () => {
+        if (this.state.pageNumber < this.state.totalPage - 1) {
             this.setState({
-                surveys: myAssignedSurveys,
-                surveysLoaded: true
+                pageNumber: this.state.pageNumber + 1
             })
+            await this.loadSurveyRespondents(this.state.pageNumber + 1);
+        }
+
+    }
+
+    decrementCounter = async () => {
+        if (this.state.pageNumber > 0) {
+            this.setState({
+                pageNumber: this.state.pageNumber - 1
+            })
+            await this.loadSurveyRespondents(this.state.pageNumber - 1);
         }
     }
 
-    handleTakeSurvey = (surveyId: number) => {
+    loadSurveyRespondents = async (page: number) => {
+        const history = await surveyClient.findHistoriesBySurveyId(this.props.match.params.surveyId, page);
+        const historyData = history.content;
+        console.log("The history data brought in is: ", historyData);
+
         this.setState({
-            redirectTo: `/surveys/survey-taking/${surveyId}`
-        })
+            historyData: historyData,
+            historyDataLoaded: true,
+            totalPage: history.totalPages
+        });
     }
 
     render() {
@@ -61,33 +72,45 @@ class AssignedSurveysComponent extends Component<IComponentProps, IComponentStat
         }
         return (
             <>
-                {this.state.surveysLoaded ? (
-                    this.state.surveys.length ? (
-                        <Table striped id="manage-users-table" className="tableUsers">
-                            <thead className="rev-background-color">
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Date Created</th>
-                                    <th>Closing Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.surveys.map((survey, index) => (
-                                    <tr key={index} className="rev-table-row" onClick={() => this.handleTakeSurvey(survey.surveyId)}>
-                                        <td>{survey.title}</td>
-                                        <td>{survey.description}</td>
-                                        <td>{survey.dateCreated && new Date(survey.dateCreated).toDateString()}</td>
-                                        <td>{survey.closingDate && new Date(survey.closingDate).toDateString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    ) : (
-                            <div>No Surveys to Display</div>
-                        )
+                {this.state.historyDataLoaded ? (
+                    <Fragment>
+                        {this.state.historyData ? (
+                            <>
+
+                                <Table striped id="manage-users-table" className="tableUsers">
+                                    <thead className="rev-background-color">
+                                        <tr>
+                                            <th>User Email</th>
+                                            <th>Date Assigned</th>
+                                            <th>Date Completed</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.state.historyData.map(history => (
+                                            <tr key={history.historyId} className="rev-table-row">
+                                                <td>{history.userEmail}</td>
+                                                <td>{history.dateAssigned && new Date(history.dateAssigned).toDateString()}</td>
+                                                <td>{history.dateCompleted && new Date(history.dateCompleted).toDateString()}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                                <ul>
+                                    <div className="div-fixed">
+                                        <tr className= "row-border">
+                                            <td><Button variant="button-color" className="rev-background-color div-child" onClick={this.decrementCounter}>Prev</Button></td>
+                                            <td><h6 className="div-child text-style" >Page {this.state.pageNumber + 1} of {this.state.totalPage}</h6></td>
+                                            <td><Button variant="button-color" className="rev-background-color div-child" onClick={this.incrementCounter}>Next</Button></td>
+                                        </tr>
+                                    </div>
+                                </ul>
+                            </>
+                        ) : (
+                                <div>No Respondents to Display</div>
+                            )}
+                    </Fragment>
                 ) : (
-                        <Loader/>
+                        <Loader />
                     )}
             </>
         );
@@ -98,4 +121,4 @@ const mapStateToProps = (state: IState) => ({
     auth: state.managementState.auth
 });
 
-export default connect(mapStateToProps)(AssignedSurveysComponent);
+export default connect(mapStateToProps)(SurveyRespondentsComponent);
