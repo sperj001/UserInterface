@@ -15,6 +15,7 @@ const questionAllBaseRoute = '/survey-service/questions/multi-question';
 const historyBaseRoute = '/survey-service/history';
 const junctionSurveyQuestionsBaseRoute = '/survey-service/junction_survey_questions';
 
+
 export const surveyClient = {
 
   //--------------------//
@@ -278,5 +279,6 @@ export const surveyClient = {
       "dateCompleted": new Date()
     }
     smsClient.patch(`${historyBaseRoute}/taken`, historyUpdate);
-  }
+  },
+
 }
