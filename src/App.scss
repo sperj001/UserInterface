@@ -529,7 +529,11 @@ body {
 /*****************
 Survey Component
 *****************/ 
+.inputWrapper {
+  display:flex;
+  justify-content: flex-start;
 
+}
 .tableUsers{
   text-align: center;
   margin-top: 4em;

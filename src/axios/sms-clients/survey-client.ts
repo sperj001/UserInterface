@@ -21,7 +21,40 @@ export const surveyClient = {
   //--------------------//
   //-- Survey Methods --//
   //--------------------//
+  findSurveyByTitle: async (title: string) => {
+    //  let surveyFound;
+    let surveys: any = [];
+    console.log(`${surveyBaseRoute}/title/${title}`);
+    await smsClient.get(`${surveyBaseRoute}/title/${title}`)
+      // await smsClient.get(`localhost:8092/surveys/title/${title}`)
+      .then(response => {
+        if (response.data) {
+          surveys = response.data;
+        }
+        else {
+          console.log("Record not found.");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
+    return surveys;
+  },
+
+  findSurveyByDescription: async (description: string) => {
+    let surveys: any = [];
+
+    await smsClient.get(`${surveyBaseRoute}/description/${description}`)
+      .then(response => {
+        surveys = response.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+   
+    return surveys;
+  },
   findAllSurveys: async () => {
     let surveysAndTemplates;
     let surveys: any = [];

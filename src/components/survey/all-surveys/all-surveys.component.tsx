@@ -18,8 +18,10 @@ interface IComponentState {
     surveysLoaded: boolean,
     surveysToAssign: number[],
     redirectTo: string | null,
-    closingFilter: boolean
-    listFiltered: ISurvey[]
+    closingFilter: boolean,
+    listFiltered: ISurvey[],
+    title: string,
+    description: string
 }
 
 export class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
@@ -31,7 +33,9 @@ export class AllSurveysComponent extends Component<IComponentProps, IComponentSt
             surveysToAssign: [],
             redirectTo: null,
             closingFilter: false,
-            listFiltered: []
+            listFiltered: [],
+            title: "",
+            description: ""
         }
     }
 
@@ -130,6 +134,43 @@ export class AllSurveysComponent extends Component<IComponentProps, IComponentSt
         }
     }
 
+    setTitleChange = async (event) => {
+        this.setState({
+            title: event.target.value
+        });
+    }
+    getSurveysByTitle = async (event) => {
+        event.preventDefault();
+        if (this.state.title) {
+            const surveyByTitle = await surveyClient.findSurveyByTitle(this.state.title);
+            this.setState({
+                surveys: surveyByTitle,
+                surveysLoaded: true
+            });
+        }
+        else { this.loadAllSurveys(); }
+    }
+
+    setDescriptionChange = (event) => {
+        this.setState({
+            description: event.target.value
+        });
+    }
+
+    getSurveysByDescription = async (event) => {
+        event.preventDefault();
+        if (this.state.description) {
+            const surveyByDescription = await surveyClient.findSurveyByDescription(this.state.description);
+            this.setState({
+                surveys: surveyByDescription,
+                surveysLoaded: true
+            });
+        }
+        else {
+            this.loadAllSurveys();
+        }
+    }
+
     // Load the surveys into the state
     loadAllSurveys = async () => {
         const allSurveys = await surveyClient.findAllSurveys();
@@ -194,6 +235,45 @@ export class AllSurveysComponent extends Component<IComponentProps, IComponentSt
                                             <th>Analytics</th>
                                             <th>Respondents</th>
                                         </tr>
+                                        <tr style={secondHeadFilter}>
+                                            <td></td>
+                                            <td>
+
+                                                <div className="inputWrapper">
+
+                                                    <input type="text" id="inputTItle" name="title"
+                                                        className="inputBox form-control" placeholder="Title"
+                                                        value={this.state.title} onChange={this.setTitleChange} />
+                                                    <button type="submit" className="btn btn-success searchbtn" onClick={this.getSurveysByTitle}>o</button>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="inputWrapper">
+
+                                                    <input type="text" id="inputDescription" name="description"
+                                                        className=" inputBox form-control" placeholder="Description"
+                                                        value={this.state.description} onChange={this.setDescriptionChange} />
+                                                    <button type="submit" className="btn btn-success searchbtn" onClick={this.getSurveysByDescription}>o</button>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {/* <DatePicker
+                                                    onChange={this.getDateCreated}
+                                                    value={this.state.createdDate}
+                                                /> */}
+                                            </td>
+
+                                            <td>
+                                                {/* <DatePicker
+                                                    onChange={this.getDateClosed}
+                                                    value={this.state.endDate}
+                                                /> */}
+                                            </td>
+
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         {!this.state.closingFilter ? this.state.surveys.map(survey => (
@@ -251,3 +331,8 @@ const mapStateToProps = (state: IState) => ({
 });
 
 export default connect(mapStateToProps)(AllSurveysComponent);
+
+const secondHeadFilter = {
+    width: '100%',
+    background: 'white'
+}
