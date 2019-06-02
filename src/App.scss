@@ -529,6 +529,17 @@ body {
 /*****************
 Survey Component
 *****************/ 
+
+.inputWrapper {
+  display:flex;
+  justify-content: flex-start;
+
+}
+.inputBox {
+  width:100px;
+  background:rgb(241, 238, 238);
+}
+
 .inputWrapper {
   display:flex;
   justify-content: flex-start;

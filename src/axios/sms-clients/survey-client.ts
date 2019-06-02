@@ -28,12 +28,7 @@ export const surveyClient = {
     await smsClient.get(`${surveyBaseRoute}/title/${title}`)
       // await smsClient.get(`localhost:8092/surveys/title/${title}`)
       .then(response => {
-        if (response.data) {
           surveys = response.data;
-        }
-        else {
-          console.log("Record not found.");
-        }
       })
       .catch(err => {
         console.log(err);
@@ -67,9 +62,7 @@ export const surveyClient = {
       });
     if (surveysAndTemplates) {
       surveysAndTemplates.forEach(element => {
-        if (!element.template) {
           surveys.push(element);
-        }
       });
     }
     return surveys;
