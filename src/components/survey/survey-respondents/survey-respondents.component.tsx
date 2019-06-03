@@ -19,7 +19,7 @@ interface IComponentState {
     totalPage: number
 };
 
-class SurveyRespondentsComponent extends React.Component<IComponentProps, IComponentState> {
+export class SurveyRespondentsComponent extends React.Component<IComponentProps, IComponentState> {
     constructor(props: IComponentProps) {
         super(props);
         this.state = {

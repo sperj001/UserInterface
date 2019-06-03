@@ -87,50 +87,57 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
             <>
                 {this.state.surveysLoaded ? (
                     <Fragment>
-                        {this.state.surveys.length ? (
-                            <>
-                                <Table striped id="manage-users-table" className="tableUsers">
-                                    <thead className="rev-background-color">
-                                        <tr>
-                                            <th>Select</th>
-                                            <th>Title</th>
-                                            <th>Description</th>
-                                            <th>Date Created</th>
-                                            <th>Closing Date</th>
-                                            <th>Published</th>
-                                            <th>Analytics</th>
-                                            <th>Respondents</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.state.surveys.map(survey => (
-                                            <tr key={survey.surveyId} className="rev-table-row">
-                                                <td><input type="checkbox" onChange={e => this.checkFunc(e)} id={survey.surveyId.toString()} /></td>
-                                                <td>{survey.title}</td>
-                                                <td>{survey.description}</td>
-                                                <td>{survey.dateCreated && new Date(survey.dateCreated).toDateString()}</td>
-                                                <td>{survey.closingDate && new Date(survey.closingDate).toDateString()}</td>
-                                                <td>{survey.published ? 'Yes' : 'No'}</td>
-                                                <td><Button className='assignSurveyBtn' onClick={() =>
-                                                    this.handleLoadSurveyData(survey.surveyId)}>Data</Button></td>
-                                                <td><Button className='assignSurveyBtn' onClick={() =>
-                                                    this.loadSurveyRespondents(survey.surveyId)}>Status</Button></td>
+
+                        <>
+                            <Table striped id="manage-users-table" className="tableUsers">
+                                <thead className="rev-background-color">
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Date Created</th>
+                                        <th>Closing Date</th>
+                                        <th>Published</th>
+                                        <th>Analytics</th>
+                                        <th>Respondents</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.state.surveys.length ? (
+                                        this.state.surveys.map(survey => (
+                                            <>
+                                                <tr key={survey.surveyId} className="rev-table-row">
+                                                    <td><input type="checkbox" onChange={e => this.checkFunc(e)} id={survey.surveyId.toString()} /></td>
+                                                    <td>{survey.title}</td>
+                                                    <td>{survey.description}</td>
+                                                    <td>{survey.dateCreated && new Date(survey.dateCreated).toDateString()}</td>
+                                                    <td>{survey.closingDate && new Date(survey.closingDate).toDateString()}</td>
+                                                    <td>{survey.published ? 'Yes' : 'No'}</td>
+                                                    <td><Button className='assignSurveyBtn' onClick={() =>
+                                                        this.handleLoadSurveyData(survey.surveyId)}>Data</Button></td>
+                                                    <td><Button className='assignSurveyBtn' onClick={() =>
+                                                        this.loadSurveyRespondents(survey.surveyId)}>Status</Button></td>
+                                                </tr>
+                                                <div className="assignButtonDiv">
+                                                    <SurveyModal
+                                                        buttonLabel='Assign To Cohorts'
+                                                        surveysToAssign={this.state.surveysToAssign} />
+                                                </div>
+                                            </>
+                                        ))
+                                    ) : (
+                                            <tr className="rev-table-row">
+                                                <td colSpan={8} ><div className='div-center fadeInUp'>You don't have any surveys.</div></td>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                                <div className="assignButtonDiv">
-                                    <SurveyModal
-                                        buttonLabel='Assign To Cohorts'
-                                        surveysToAssign={this.state.surveysToAssign} />
-                                </div>
-                            </>
-                        ) : (
-                                <div className= "fadeInUp">No Surveys to Display</div>
-                            )}
+                                        )}
+                                </tbody>
+                            </Table>
+
+                        </>
+
                     </Fragment>
                 ) : (
-                        <Loader/>
+                        <Loader />
                     )}
             </>
         );
